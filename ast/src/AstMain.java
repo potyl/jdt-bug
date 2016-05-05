@@ -17,6 +17,13 @@ public class AstMain {
 
     public static void main(String args[]) {
 
+        // Check if we need to add a pause before parsing (ideal for attaching a profiler)
+        boolean doPause = false;
+        if (args.length > 0 && "--pause".equals(args[0])) {
+            doPause = true;
+        }
+
+        // Find the source files
         List<String> files = new ArrayList<>();
         scanJavaFiles(PROJECT_SRC, files);
         String [] sources = files.toArray(new String [0]);
@@ -54,6 +61,20 @@ public class AstMain {
         ASTParser parser = createAstParser(classpaths, new String [] { PROJECT_SRC.toString() });
         long end = System.currentTimeMillis();
         System.out.printf("Created ast parser in %,d ms\n", end - start);
+
+        // Add a pause for the profiler
+        if (doPause) {
+            try {
+                System.out.print("Press enter to exit the program: ");
+                System.out.flush();
+                //noinspection ResultOfMethodCallIgnored
+                System.in.read();
+                System.out.println("Ending program");
+            }
+            catch (IOException e) {
+                // Ignored
+            }
+        }
 
         start = System.currentTimeMillis();
         parser.createASTs(sources, encodings, new String [0], requestor, null);
