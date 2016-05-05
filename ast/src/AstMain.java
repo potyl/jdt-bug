@@ -17,11 +17,11 @@ public class AstMain {
 
     public static void main(String args[]) {
 
-        // We parse all files provided via the args
-        String [] sources = new String[args.length];
-        String [] encodings = new String [args.length];
+        List<String> files = new ArrayList<>();
+        scanJavaFiles(PROJECT_SRC, files);
+        String [] sources = files.toArray(new String [0]);
+        String [] encodings = new String [sources.length];
         for (int i = 0; i < encodings.length; ++i) {
-            sources[i] = args[i];
             encodings[i] = "UTF-8";
         }
 
@@ -112,5 +112,23 @@ public class AstMain {
             true // include vm boot
         );
         return parser;
+    }
+
+    // Find the java source files by scanning the top folder
+    private static void scanJavaFiles(File file, Collection<String> files) {
+        if (file.isDirectory()) {
+            for (String subFileName : file.list()) {
+                if (subFileName.startsWith(".")) {
+                    continue;
+                }
+                File subFile = new File(file, subFileName);
+                scanJavaFiles(subFile, files);
+            }
+        } else {
+            String fileName = file.toString();
+            if (fileName.endsWith(".java")) {
+                files.add(fileName);
+            }
+        }
     }
 }

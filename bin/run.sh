@@ -10,4 +10,4 @@ libs_folder="ast/libs/$1"
 
 [ -d ast/classes ] || mkdir ast/classes
 javac -cp "${libs_folder}/*" -d ast/classes ast/src/AstMain.java && \
-java -cp "ast/classes:${libs_folder}/*" AstMain $(find k9mail/src/ -name '*.java')
+java -cp "ast/classes:${libs_folder}/*" AstMain
